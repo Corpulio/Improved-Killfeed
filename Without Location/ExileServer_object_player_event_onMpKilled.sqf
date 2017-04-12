@@ -178,7 +178,7 @@ switch (_killType) do
 				_newKillerRespect = _newKillerRespect + (_x select 1);
 			} 
 			forEach _perks;
-			_systemChat = format ["%1 was killed by %2 with a %3 (%4)! (%6)", name _victim, name _killingPlayer, _weaponDisplayName, _weaponScopeDisplayName, _perkNames joinString ", "];
+			_systemChat = format ["%1 was killed by %2 with a %3 (%4)! (%5)", name _victim, name _killingPlayer, _weaponDisplayName, _weaponScopeDisplayName, _perkNames joinString ", "];
 			};
 			
 		};
