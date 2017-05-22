@@ -1,6 +1,6 @@
 /*
 
-Improved Killfeed for ExileMod (Exile 1.0.2)
+Improved Killfeed for ExileMod (Exile 1.0.3)
 
 by [FPS]kuplion
 

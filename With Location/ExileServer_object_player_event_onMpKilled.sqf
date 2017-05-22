@@ -5,6 +5,8 @@
  * www.exilemod.com
  * © 2015 Exile Mod Team
  *
+ * Modified by [FPS]kuplion - www.friendlyplayershooting.com
+ *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License. 
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
  */
@@ -12,6 +14,7 @@
 private["_victim","_killer","_countDeath","_countKill","_killSummary","_killingPlayer","_killType","_oldVictimRespect","_newVictimRespect","_oldKillerRespect","_newKillerRespect","_systemChat","_modifyVictimRespect","_respectLoss","_perks","_minRespectTransfer","_respectTransfer","_perkNames","_killerStatsNeedUpdate","_newKillerFrags","_victimStatsNeedUpdate","_newVictimDeaths","_victimPosition"];
 _victim = _this select 0;
 _killer = _this select 1;
+_instigator = _this select 2;
 if (!isServer || hasInterface || isNull _victim) exitWith {};
 _victim setVariable ["ExileDiedAt", time];
 if !(isPlayer _victim) exitWith {};
@@ -21,7 +24,7 @@ _countDeath = false;
 _countKill = false;
 _killSummary = [];
 _killingPlayer = _killer call ExileServer_util_getFragKiller;
-_killType = [_victim, _killer, _killingPlayer] call ExileServer_util_getFragType;
+_killType = [_victim, _killer, _killingPlayer, _instigator] call ExileServer_util_getFragType;
 _oldVictimRespect = _victim getVariable ["ExileScore", 0];
 _newVictimRespect = _oldVictimRespect;
 _oldKillerRespect = 0;
@@ -34,15 +37,27 @@ switch (_killType) do
 {
 	default 
 	{
+		_unknownReasons = 
+		[
+			"%1 died because... Arma.",
+			"%1 died because the universe hates him.",
+			"%1 died a mysterious death.",
+			"%1 died and nobody knows why.",
+			"%1 died because that's why.",
+			"%1 died because %1 was very unlucky.",
+			"%1 died due to Arma bugs and is probably very salty right now.",
+			"%1 died an awkward death.",
+			"%1 died. Yes, %1 is dead. Like really dead-dead."
+		];
 		_countDeath = true;
-		_systemChat = format ["%1 died for an unknown reason!", name _victim];
+		_systemChat = format [selectRandom _unknownReasons, name _victim];
 		_newVictimRespect = _oldVictimRespect - round ((abs _oldVictimRespect) / 100 * (getNumber (configFile >> "CfgSettings" >> "Respect" >> "Percentages" >> "unlucky")));
 	};
 	case 1:
 	{
 		private["_zombieKill"];
 		_victimPosition = position _victim;
-		_bystanders = _victimPosition nearEntities ['Man',5]; // 5m from Zombie
+		_bystanders = _victimPosition nearEntities ['Man',5];
 		_zombieKill = false;
 		{
 			_zombieKill = getText(configFile >> 'CfgVehicles' >> typeOf _x >> 'author') isEqualTo 'Ryan';
@@ -52,7 +67,7 @@ switch (_killType) do
 		{
 		_countDeath = true;
 		_modifyVictimRespect = true;
-		_zombieDeath = selectRandom ["got fucked up", "had their face eaten", "got wrecked", "was killed", "was mauled to death", "got nommed on", "was eaten", "was turned into dinner", "was hugged to death"]; //Add more messages here to change the killed text
+		_zombieDeath = selectRandom ["was killed", "was eaten"]; //Add more messages here to change the killed text
 		_systemChat = format ["%1 %2 by a zombie!", name _victim, _zombieDeath];
 		_newVictimRespect = _oldVictimRespect - round ((abs _oldVictimRespect) / 100 * (getNumber (configFile >> "CfgSettings" >> "Respect" >> "Percentages" >> "suicide")));
 		}
@@ -84,7 +99,7 @@ switch (_killType) do
 	{
 		_countDeath = true;
 		_countKill = false;
-		_npcDeath = selectRandom ["got fucked up", "got wrecked", "was killed", "was shot dead", "was used as a pin cushion", "was terminated", "was shot full of holes", "was shot in the face", "was executed", "was murdered"]; //Add more messages here to change the killed text
+		_npcDeath = selectRandom ["was killed", "was murdered"]; //Add more messages here to change the killed text
 		_systemChat = format ["%1 %2 by an NPC!", name _victim, _npcDeath];
 		_newVictimRespect = _oldVictimRespect - round ((abs _oldVictimRespect) / 100 * (getNumber (configFile >> "CfgSettings" >> "Respect" >> "Percentages" >> "npc")));
 	};
@@ -124,8 +139,7 @@ switch (_killType) do
 		{ 
 			_weapon = vehicle _killer weaponsTurret (assignedVehicleRole _killer select 1);
 			_weaponDisplayName = getText (configfile >> "CfgWeapons" >> _weapon select 0 >> "displayName");
-		};
-				
+		};	
         _weaponScope = ""; 
 		_weaponScopeDisplayName = "Iron Sights";
 		if ((vehicle _killer) isEqualTo _killer) then
