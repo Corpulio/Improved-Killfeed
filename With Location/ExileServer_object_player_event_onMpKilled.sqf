@@ -23,6 +23,7 @@ _victim setVariable ["ExileName", name _victim, true];
 _countDeath = false;
 _countKill = false;
 _killSummary = [];
+_killingPlayer = _killer call ExileServer_util_getFragKiller;
 _killType = [_victim, _killer, _killingPlayer] call ExileServer_util_getFragType; // 1.0.2 files as a temp fix
 //_killType = [_victim, _killer, _killingPlayer, _instigator] call ExileServer_util_getFragType; // 1.0.3 Seems to be bugged
 _oldVictimRespect = _victim getVariable ["ExileScore", 0];
