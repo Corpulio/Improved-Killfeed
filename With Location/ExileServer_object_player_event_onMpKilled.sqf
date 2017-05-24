@@ -14,7 +14,7 @@
 private["_victim","_killer","_countDeath","_countKill","_killSummary","_killingPlayer","_killType","_oldVictimRespect","_newVictimRespect","_oldKillerRespect","_newKillerRespect","_systemChat","_modifyVictimRespect","_respectLoss","_perks","_minRespectTransfer","_respectTransfer","_perkNames","_killerStatsNeedUpdate","_newKillerFrags","_victimStatsNeedUpdate","_newVictimDeaths","_victimPosition"];
 _victim = _this select 0;
 _killer = _this select 1;
-_instigator = _this select 2;
+//_instigator = _this select 2; // 1.0.3 Seems to be bugged
 if (!isServer || hasInterface || isNull _victim) exitWith {};
 _victim setVariable ["ExileDiedAt", time];
 if !(isPlayer _victim) exitWith {};
@@ -23,8 +23,8 @@ _victim setVariable ["ExileName", name _victim, true];
 _countDeath = false;
 _countKill = false;
 _killSummary = [];
-_killingPlayer = _killer call ExileServer_util_getFragKiller;
-_killType = [_victim, _killer, _killingPlayer, _instigator] call ExileServer_util_getFragType;
+_killType = [_victim, _killer, _killingPlayer] call ExileServer_util_getFragType; // 1.0.2 files as a temp fix
+//_killType = [_victim, _killer, _killingPlayer, _instigator] call ExileServer_util_getFragType; // 1.0.3 Seems to be bugged
 _oldVictimRespect = _victim getVariable ["ExileScore", 0];
 _newVictimRespect = _oldVictimRespect;
 _oldKillerRespect = 0;

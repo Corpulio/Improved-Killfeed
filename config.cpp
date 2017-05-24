@@ -21,4 +21,7 @@ class CfgExileCustomCode
 	// Remove Range
 	ExileServer_util_getFragPerks = "Custom\ImprovedKillFeed\ExileServer_util_getFragPerks.sqf";
 	
+	// 1.0.3 Hotfix
+	ExileServer_util_getFragKiller = "Custom\ImprovedKillFeed\ExileServer_util_getFragKiller.sqf";
+	ExileServer_util_getFragType = "Custom\ImprovedKillFeed\ExileServer_util_getFragType.sqf";
 }; 
